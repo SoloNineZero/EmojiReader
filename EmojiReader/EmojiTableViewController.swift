@@ -68,4 +68,32 @@ class EmojiTableViewController: UITableViewController {
         tableView.reloadData()
     }
    
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let done = doneAction(at: indexPath)
+        let favorite = favoriteAction(at: indexPath)
+        return UISwipeActionsConfiguration(actions: [done, favorite])
+    }
+    
+    func doneAction(at indexPath: IndexPath) -> UIContextualAction {
+        let action = UIContextualAction(style: .destructive, title: "Done") { action, view, completion in
+            self.objects.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            completion(true)
+        }
+        action.backgroundColor = .systemGreen
+        action.image = UIImage (systemName: "checkmark.seal")
+        return action
+    }
+    
+    func favoriteAction(at indexPath: IndexPath) -> UIContextualAction {
+        var object = objects[indexPath.row]
+         let action = UIContextualAction(style: .normal, title: "Favorite") { action, view, completion in
+            object.isFavourite = !object.isFavourite
+             self.objects[indexPath.row] = object
+             completion(true)
+        }
+        action.backgroundColor = object.isFavourite ? .systemPurple : .systemGray
+        action.image = UIImage(systemName: "hand.thumbsup")
+        return action
+    }
 }
